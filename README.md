@@ -58,11 +58,10 @@ choices | JSON | true |  [{choiceCode: 'Yes',choiceText: 'Yes'}, {choiceCode: 'N
 onChange | function callback | true |  No event callback | It will call the function callback on user selection change, it will return JSON option based on selected choice property
 ## Contribution
 
-If you face any issue, bugs or see any area for impprovement feel free to create an issue, pull request and discuess it.
+If you encounter any issue, bugs or see any area for improvement feel free to create an issue, pull request and discuss it.
+please add a screenshot of the bug or a code snippet.
 
 Thanks!
-If you encountered an Issue, please add a screenshot of the bug or a code snippet.
-
 ---
 
 **MIT Licensed**
