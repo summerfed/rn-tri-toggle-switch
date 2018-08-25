@@ -299,6 +299,28 @@ class TriStateToggleSwitch extends Component {
     });
   };
 
+  _addPropStyle = (cssStyleName, propName, styleJson, defaultValue) => {
+    const prop = this.props[propName];
+    if (prop) {
+      styleJson[cssStyleName] = prop;
+    } else {
+      if(defaultValue) {
+        styleJson[cssStyleName] = defaultValue;
+      }
+    }
+  };
+
+  _setCircleSize = circleStyleJson => {
+    let height = this.props.height;
+    if (height) {
+      height = height - 4;
+      width = height;
+      circleStyleJson['height'] = height;
+      circleStyleJson['width'] = width;
+      circleStyleJson['borderRadius'] = height / 2;
+    }
+  };
+
   render() {
     const { _addPropStyle, _setCircleSize } = this;
     const containerStyle = { ...styles.container };

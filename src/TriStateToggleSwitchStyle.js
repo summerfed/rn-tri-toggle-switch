@@ -17,7 +17,6 @@ export default {
   },
 
   formContainer: {
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center'
@@ -29,13 +28,6 @@ export default {
     alignSelf: 'flex-start'
   },
 
-  toggleSwitch: {
-    position: 'absolute',
-    top: -30,
-    left: -60,
-    transform: [{ scale: 0.4 }]
-  },
-
   labelText: {
     fontSize: 15,
     fontWeight: 'bold',
@@ -45,18 +37,6 @@ export default {
     position: 'absolute',
     top: 30,
     left: -10
-  },
-
-  itemsContainerBackgroundStyle: {
-    position: 'absolute',
-    height: 66,
-    left: 0,
-    right: 0,
-    top: 0.5,
-    marginTop: 15,
-    marginLeft: 7.5,
-    marginRight: 7.5,
-    borderRadius: 33
   },
 
   touchableStyle: { width: '100%', alignItems: 'center' },
