@@ -51,10 +51,7 @@ const SELECTED_LEFT = 'left';
 export const log = (methodName, evt, gestureState) => {
   console.log(methodName + ' evt: ' + evt); // eslint-disable-line
   console.log(methodName + ' gestureState: ' + JSON.stringify(gestureState)); // eslint-disable-line
-  console.log(
-    // eslint-disable-line
-    '========================================================================='
-  );
+  console.log('=========================================================================');
 };
 
 class TriStateToggleSwitch extends Component {
@@ -87,65 +84,52 @@ class TriStateToggleSwitch extends Component {
     this.initializeContainerPanResponder();
   }
 
-  initializeContainerPanResponder = () => {
-    const thisComponent = this;
-    // Add a listener for the delta value change
-    this._lastCircleXPosOrigin = 0;
-    this._storedCircleXPos = { x: 0, y: 0 };
-    this.state.circleXPos.addListener(value => {
-      this._storedCircleXPos = value;
-    });
-
-    thisComponent.containerPanResponder = PanResponder.create({
-      onStartShouldSetPanResponder: (e, gesture) => true, //eslint-disable-line
-      onPanResponderGrant: (evt, gestureState) => {
-        let storedCircleXPos = this._storedCircleXPos.value;
-        if (storedCircleXPos) {
-          this._lastCircleXPosOrigin = storedCircleXPos;
-          this.state.circleXPos.setOffset(storedCircleXPos);
-        }
-      },
-      onPanResponderMove: (evt, gestureState) => {
-        log('onPanResponderMove: ', evt, gestureState);
-        return Animated.event([
-          null,
-          {
-            dx: thisComponent.state.circleXPos
-          }
-        ])(evt, gestureState);
-      },
-      onPanResponderRelease: (evt, gestureState) => {
-        const { dx } = gestureState;
-        let direction = dx < 0 ? 'left' : 'right';
-        let location = Math.abs(dx) - Math.abs(this._lastCircleXPosOrigin);
-        console.log('dx: ' + dx);
-        console.log('_storedCircleXPos: ' + this._storedCircleXPos.value);
-        console.log(
-          'this._lastCircleXPosOrigin: ' + this._lastCircleXPosOrigin
-        );
-        console.log('location: ' + location);
-        console.log('this.state.xDistance: ' + this.state.xDistance);
-        console.log(
-          'location >= this.state.xDistance-15: ' +
-            (location >= this.state.xDistance - 15)
-        );
-        console.log('direction: ' + direction);
-        if (location >= this.state.xDistance - this.state.xDisntanceThreshold) {
-          if (direction == 'left') {
-            this.onPressNo();
-          } else if (direction == 'right') {
-            this.onPressYes();
-          }
-        } else {
-          this.onPressNone();
-        }
-
-        log('onPanResponderRelease: ', evt, gestureState);
+  componentDidMount() {
+    const { initialValue } = this.props;
+    if (initialValue !== null) {
+      const initialChoiceIndex = this.choices.findIndex(element => element.choiceCode === initialValue);
+      const { xDistance } = this.state;
+      if (initialChoiceIndex === 0) {
+        this.setState({
+          circleXPos: new Animated.Value(-1 * xDistance),
+          noOptionXPos: new Animated.Value(xDistance),
+          noOptionOpacity: new Animated.Value(1),
+          yesOptionOpacity: new Animated.Value(0),
+          selected: SELECTED_LEFT
+        });
+      } else if (initialChoiceIndex === 1) {
+        this.setState({
+          circleXPos: new Animated.Value(xDistance),
+          yesOptionXPos: new Animated.Value(-1 * xDistance),
+          noOptionOpacity: new Animated.Value(0),
+          yesOptionOpacity: new Animated.Value(1),
+          selected: SELECTED_RIGHT
+        });
       }
-    });
-  };
+    }
+  }
 
-  onPressNo = (e, animationOnly) => {
+  static getDerivedStateFromProps(nextProps, prevState) {
+    let { width, height } = nextProps;
+    if (!width) {
+      width = 120; // default width
+    }
+
+    if (!height) {
+      height = 24; // default height
+    }
+
+    const xDistance = (width / 2) - ((height - 4) / 2) - 5;
+    if (prevState.xDistance !== xDistance) {
+      return {
+        xDistance,
+        xDisntanceThreshold: xDistance * 0.33
+      };
+    }
+    return null;
+  }
+
+  onPressNo = () => {
     if (this.state.selected === SELECTED_LEFT) {
       // if selected is no then select yes
       this.onPressYes();
@@ -216,9 +200,62 @@ class TriStateToggleSwitch extends Component {
     }
   };
 
-  executeCallback = value => {
-    const onChange = this.props.onChange;
-    if (typeof onChange == 'function') {
+  initializeContainerPanResponder = () => {
+    const thisComponent = this;
+    // Add a listener for the delta value change
+    this._lastCircleXPosOrigin = 0;
+    this._storedCircleXPos = { x: 0, y: 0 };
+    this.state.circleXPos.addListener((value) => {
+      this._storedCircleXPos = value;
+    });
+
+    thisComponent.containerPanResponder = PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderGrant: () => {
+        const storedCircleXPos = this._storedCircleXPos.value;
+        if (storedCircleXPos) {
+          this._lastCircleXPosOrigin = storedCircleXPos;
+          this.state.circleXPos.setOffset(storedCircleXPos);
+        }
+      },
+      onPanResponderMove: (evt, gestureState) => {
+        log('onPanResponderMove: ', evt, gestureState);
+        return Animated.event([
+          null,
+          {
+            dx: thisComponent.state.circleXPos
+          }
+        ])(evt, gestureState);
+      },
+      onPanResponderRelease: (evt, gestureState) => {
+        const { dx } = gestureState;
+        const direction = dx < 0 ? 'left' : 'right';
+        const location = Math.abs(dx) - Math.abs(this._lastCircleXPosOrigin);
+        console.log(`dx: ${dx}`);
+        console.log(`_storedCircleXPos: ${this._storedCircleXPos.value}`);
+        console.log(`this._lastCircleXPosOrigin: ${this._lastCircleXPosOrigin}`);
+        console.log(`location: ${location}`);
+        console.log(`this.state.xDistance: ${this.state.xDistance}`);
+        console.log(`location >= this.state.xDistance-15: ${location >= this.state.xDistance - 15}`);
+        console.log(`direction: ${direction}`);
+        if (location >= this.state.xDistance - this.state.xDisntanceThreshold) {
+          if (direction === 'left') {
+            this.onPressNo();
+          } else if (direction === 'right') {
+            this.onPressYes();
+          }
+        } else {
+          this.onPressNone();
+        }
+
+        log('onPanResponderRelease: ', evt, gestureState);
+      }
+    });
+  };
+
+  executeCallback = (value) => {
+    const { onChange } = this.props;
+    if (typeof onChange === 'function') {
       this.props.onChange(value);
     }
   };
@@ -260,97 +297,26 @@ class TriStateToggleSwitch extends Component {
         }
       );
     });
-  }
-
-  componentDidMount() {
-    const initialValue = this.props.initialValue;
-    if (initialValue !== null) {
-      const initialChoiceIndex = this.choices.findIndex(
-        element => element.choiceCode === initialValue
-      );
-
-      const { xDistance } = this.state;
-      if (initialChoiceIndex === 0) {
-        this.setState({
-          circleXPos: new Animated.Value(-1 * xDistance),
-          noOptionXPos: new Animated.Value(xDistance),
-          noOptionOpacity: new Animated.Value(1),
-          yesOptionOpacity: new Animated.Value(0),
-          selected: SELECTED_LEFT
-        });
-      } else if (initialChoiceIndex === 1) {
-        this.setState({
-          circleXPos: new Animated.Value(xDistance),
-          yesOptionXPos: new Animated.Value(-1 * xDistance),
-          noOptionOpacity: new Animated.Value(0),
-          yesOptionOpacity: new Animated.Value(1),
-          selected: SELECTED_RIGHT
-        });
-      }
-    }
-  }
-
-  _addPropStyle = (cssStyleName, propName, styleJson, defaultValue) => {
-    const prop = this.props[propName];
-    if (prop) {
-      styleJson[cssStyleName] = prop;
-    } else {
-      if (defaultValue) {
-        styleJson[cssStyleName] = defaultValue;
-      }
-    }
   };
-
-  _setCircleSize = circleStyleJson => {
-    let height = this.props.height;
-    if (height) {
-      height = height - 4;
-      width = height;
-      circleStyleJson['height'] = height;
-      circleStyleJson['width'] = width;
-      circleStyleJson['borderRadius'] = height / 2;
-    }
-  };
-
-  static getDerivedStateFromProps(nextProps, prevState) {
-    let width = nextProps.width;
-    let height = nextProps.height;
-    if (!width) {
-      width = 120; // default width
-    }
-
-    if (!height) {
-      height = 24; // default height
-    }
-
-    const xDistance = width / 2 - (height - 4) / 2 - 5;
-    if (prevState.xDistance !== xDistance) {
-      return {
-        xDistance,
-        xDisntanceThreshold: xDistance * 0.33
-      };
-    }
-    return null;
-  }
 
   render() {
     const { _addPropStyle, _setCircleSize } = this;
-    let containerStyle = { ...styles.container };
-    if (this.state.selected == SELECTED_NONE) {
+    const containerStyle = { ...styles.container };
+    if (this.state.selected === SELECTED_NONE) {
       _addPropStyle(
         'backgroundColor',
         'selectedNoneBgColor',
         containerStyle,
         '#41B6E6'
       );
-    } else if (this.state.selected == SELECTED_LEFT) {
+    } else if (this.state.selected === SELECTED_LEFT) {
       _addPropStyle(
         'backgroundColor',
         'selectedLeftBgColor',
         containerStyle,
         '#3171BF'
       );
-    } else if (this.state.selected == SELECTED_RIGHT) {
+    } else if (this.state.selected === SELECTED_RIGHT) {
       _addPropStyle(
         'backgroundColor',
         'selectedRightBgColor',
@@ -359,13 +325,13 @@ class TriStateToggleSwitch extends Component {
       );
     }
 
-    let circleStyle = { ...styles.circle };
+    const circleStyle = { ...styles.circle };
     _addPropStyle('height', 'height', containerStyle);
     _addPropStyle('width', 'width', containerStyle);
     _setCircleSize(circleStyle);
     _addPropStyle('backgroundColor', 'circleBgColor', circleStyle);
 
-    let touchableTextStyle = { ...styles.touchableTextStyle };
+    const touchableTextStyle = { ...styles.touchableTextStyle };
     _addPropStyle('color', 'fontColor', touchableTextStyle, '#fff');
     _addPropStyle('fontSize', 'fontSize', touchableTextStyle, 12);
 

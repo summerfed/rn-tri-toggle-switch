@@ -59,6 +59,6 @@ export default {
     borderRadius: 33
   },
 
-  touchableStyle: {width: '100%', alignItems: 'center'},
-  touchableTextStyle: {color: '#fff'}
-}
+  touchableStyle: { width: '100%', alignItems: 'center' },
+  touchableTextStyle: { color: '#fff' }
+};

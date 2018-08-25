@@ -22,6 +22,10 @@
       "class-methods-use-this": "off",
       "react/no-unused-prop-types": "warn",
       "react/prefer-stateless-function": ["error", {"ignorePureComponents": true}],
-	  "react/require-default-props": "off"
+      "react/require-default-props": "off",
+      "comma-dangle": ["error", "never"],
+      "react/no-did-mount-set-state": "off",
+      "max-len": "off",
+      "no-param-reassign": "off"
     }
 }
