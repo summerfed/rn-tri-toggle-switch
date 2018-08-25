@@ -1,6 +1,6 @@
 {
   "name": "rn-tri-toggle-switch",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Simple Tri state toggle switch",
   "main": "src/index",
   "typings": "src/index",

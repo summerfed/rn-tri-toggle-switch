@@ -21,13 +21,23 @@ React Native Tri State Toggle Switch Component for iOS and Android.
 
 ## Getting started  
 
-To Get Started, Import `toggle-switch-react-native` to your js file.   
+To Get Started, Import `rn-tri-toggle-switch` to your js file.   
 
-`import ToggleSwitch from 'toggle-switch-react-native'`  
+`import TriStateToggleSwitch from 'rn-tri-toggle-switch'`  
 
 Inside render or any other function returning component you can use tristate toggle switch like:
 
 ```javascript
+let choicesProp = [
+  {
+    choiceCode: 'Yes',
+    choiceText: 'Yes'
+  },
+  {
+    choiceCode: 'No',
+    choiceText: 'No'
+  }
+]
 <TriStateToggleSwitch 
     width={400} 
     height={80} 
@@ -37,11 +47,10 @@ Inside render or any other function returning component you can use tristate tog
     fontColor={'#fff'}
     fontSize={30}
     circleBgColor={'white'}
-    choices={choice4}
+    choices={choicesProp}
     onChange={(value)=>alert(JSON.stringify(value))}
 />
 ```
-
 ## Customize 
 
 Props              | Type     | Optional | Default     | Description
@@ -58,8 +67,7 @@ choices | JSON | true |  [{choiceCode: 'Yes',choiceText: 'Yes'}, {choiceCode: 'N
 onChange | function callback | true |  No event callback | It will call the function callback on user selection change, it will return JSON option based on selected choice property
 ## Contribution
 
-If you encounter any issue, bugs or see any area for improvement feel free to create an issue, pull request and discuss it.
-please add a screenshot of the bug or a code snippet.
+If you encounter any issue, bugs or see any area for improvement feel free to create an issue, pull request and discuss it. Please add screenshot of the bug or a code snippet.
 
 Thanks!
 ---
