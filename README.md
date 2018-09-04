@@ -65,6 +65,7 @@ fontColor | String | true |  #fff |  Color of toggle label text
 fontSize | number | true |  12 | Size of toggle label textcomponent 
 choices | JSON | true |  [{choiceCode: 'Yes',choiceText: 'Yes'}, {choiceCode: 'No',choiceText: 'No'}] | Only the choiceCode and choiceText is mandatory, you can add any property to your JSON, it will return on function callback.
 onChange | function callback | true |  No event callback | It will call the function callback on user selection change, it will return JSON option based on selected choice property
+initialValue | String | true |  null | Set initial value by choiceCode 
 ## Contribution
 
 If you encounter any issue, bugs or see any area for improvement feel free to create an issue, pull request and discuss it. Please add screenshot of the bug or a code snippet.
