@@ -211,6 +211,7 @@ class TriStateToggleSwitch extends Component {
 
     thisComponent.containerPanResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
+      onPanResponderTerminationRequest: () => false,
       onPanResponderGrant: () => {
         const storedCircleXPos = this._storedCircleXPos.value;
         if (storedCircleXPos) {
