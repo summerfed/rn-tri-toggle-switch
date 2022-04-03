@@ -153,23 +153,28 @@ class TriStateToggleSwitch extends Component {
     Animated.parallel([
       Animated.timing(this.state.circleXPos, {
         toValue: 0,
-        duration: 100
+        duration: 100,
+        useNativeDriver: false
       }),
       Animated.timing(this.state.noOptionXPos, {
         toValue: 0,
-        duration: 100
+        duration: 100,
+        useNativeDriver: false
       }),
       Animated.timing(this.state.yesOptionXPos, {
         toValue: 0,
-        duration: 100
+        duration: 100,
+        useNativeDriver: false
       }),
       Animated.timing(this.state.noOptionOpacity, {
         toValue: 1,
-        duration: 100
+        duration: 100,
+        useNativeDriver: false
       }),
       Animated.timing(this.state.yesOptionOpacity, {
         toValue: 1,
-        duration: 100
+        duration: 100,
+        useNativeDriver: false
       })
     ]).start(() => {
       this.setState(
@@ -224,9 +229,10 @@ class TriStateToggleSwitch extends Component {
         return Animated.event([
           null,
           {
-            dx: thisComponent.state.circleXPos
-          }
-        ])(evt, gestureState);
+            dx: thisComponent.state.circleXPos,
+          },
+          
+        ],{useNativeDriver:false})(evt, gestureState);
       },
       onPanResponderRelease: (evt, gestureState) => {
         const { dx } = gestureState;
@@ -274,19 +280,23 @@ class TriStateToggleSwitch extends Component {
     Animated.parallel([
       Animated.timing(this.state.circleXPos, {
         toValue: circleXPos,
-        duration: 100
+        duration: 100,
+        useNativeDriver: false
       }),
       Animated.timing(this.state[xposState], {
         toValue: optionXPosValue,
-        duration: 100
+        duration: 100,
+        useNativeDriver: false
       }),
       Animated.timing(this.state.noOptionOpacity, {
         toValue: noOptionOpacity,
-        duration: 100
+        duration: 100,
+        useNativeDriver: false
       }),
       Animated.timing(this.state.yesOptionOpacity, {
         toValue: yesOptionOpacity,
-        duration: 100
+        duration: 100,
+        useNativeDriver: false
       })
     ]).start(() => {
       this.setState(
@@ -372,6 +382,7 @@ class TriStateToggleSwitch extends Component {
                 opacity: this.state.noOptionOpacity
               }
             }}
+            
           >
             <TouchableOpacity
               style={styles.touchableStyle}
