@@ -71,6 +71,7 @@ class TriStateToggleSwitch extends Component {
     };
 
     this.state = {
+      containerRef: null,
       circleXPos: new Animated.Value(0), // Initial value for Circle Horizontal Position,
       noOptionXPos: new Animated.Value(0),
       noOptionOpacity: new Animated.Value(1),
@@ -226,25 +227,22 @@ class TriStateToggleSwitch extends Component {
       },
       onPanResponderMove: (evt, gestureState) => {
         log('onPanResponderMove: ', evt, gestureState);
-        return Animated.event([
-          null,
-          {
-            dx: thisComponent.state.circleXPos,
-          },
-          
-        ],{useNativeDriver:false})(evt, gestureState);
+        this.containerRef.measure((width) => {
+          if (thisComponent.state.circleXPos >= -width && thisComponent.state.circleXPos <= width) {
+            return Animated.event([
+              null,
+              {
+                dx: thisComponent.state.circleXPos
+              }
+
+            ], { useNativeDriver: false })(evt, gestureState);
+          }
+        });
       },
       onPanResponderRelease: (evt, gestureState) => {
         const { dx } = gestureState;
         const direction = dx < 0 ? 'left' : 'right';
         const location = Math.abs(dx) - Math.abs(this._lastCircleXPosOrigin);
-        console.log(`dx: ${dx}`);
-        console.log(`_storedCircleXPos: ${this._storedCircleXPos.value}`);
-        console.log(`this._lastCircleXPosOrigin: ${this._lastCircleXPosOrigin}`);
-        console.log(`location: ${location}`);
-        console.log(`this.state.xDistance: ${this.state.xDistance}`);
-        console.log(`location >= this.state.xDistance-15: ${location >= this.state.xDistance - 15}`);
-        console.log(`direction: ${direction}`);
         if (location >= this.state.xDistance - this.state.xDisntanceThreshold) {
           if (direction === 'left') {
             this.onPressNo();
@@ -314,21 +312,19 @@ class TriStateToggleSwitch extends Component {
     const prop = this.props[propName];
     if (prop) {
       styleJson[cssStyleName] = prop;
-    } else {
-      if(defaultValue) {
-        styleJson[cssStyleName] = defaultValue;
-      }
+    } else if (defaultValue) {
+      styleJson[cssStyleName] = defaultValue;
     }
   };
 
-  _setCircleSize = circleStyleJson => {
+  _setCircleSize = (circleStyleJson) => {
     let height = this.props.height;
     if (height) {
-      height = height - 4;
+      height -= 4;
       width = height;
-      circleStyleJson['height'] = height;
-      circleStyleJson['width'] = width;
-      circleStyleJson['borderRadius'] = height / 2;
+      circleStyleJson.height = height;
+      circleStyleJson.width = width;
+      circleStyleJson.borderRadius = height / 2;
     }
   };
 
@@ -373,6 +369,7 @@ class TriStateToggleSwitch extends Component {
         <View
           style={containerStyle}
           {...this.containerPanResponder.panHandlers}
+          ref={(ref) => { this.containerRef = ref; }}
         >
           <Animated.View
             style={{
@@ -382,7 +379,7 @@ class TriStateToggleSwitch extends Component {
                 opacity: this.state.noOptionOpacity
               }
             }}
-            
+
           >
             <TouchableOpacity
               style={styles.touchableStyle}
